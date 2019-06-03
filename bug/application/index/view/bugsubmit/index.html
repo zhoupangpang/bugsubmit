@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>bug提交</title>
+    <link rel="stylesheet" href="__STATIC__/lib/css/bootstrap.min.css">
+    <script src="__STATIC__/lib/js/jquery.min.js"></script>
+    <script src="__STATIC__/lib/js/bootstrap.min.js"></script>
+    <style>
+        a{
+            text-decoration:none; 
+            color:#000;
+        }
+        .container{
+            margin: 50px auto;
+        }
+        .table{
+            width: 90%;
+            text-align: center;
+        }
+        .btn{
+            margin-bottom: 20px;
+        }
+        li a.cur{
+            display: block;
+            background-color: #337ab7;
+            color:#fff;
+        }
+        .pagination{
+         float: right;  
+         margin-right: 120px; 
+        }
+        .title{
+            cursor: pointer;
+        }
+        .title:hover{
+            color:#337ab7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{:url('index/Bugsubmit/setbug')}">
+            <button type="button" class="btn btn-primary"> + 提bug</button>  
+        </a>
+        <table class="table table-hover table-bordered">
+            <thead>
+            {eq name="data" value="123456"}
+            <tr>
+                <th>id</th>
+                <th>标题</th>
+                <th>是否解决</th>
+                <th>联系方式</th>
+                <th>姓名</th>
+                <th>时间</th>
+                <th>详情</th>
+                <th>删除</th>
+            </tr>
+            {else/}
+            <tr>
+                <th>id</th>
+                <th>标题</th>
+                <th>是否解决</th>
+                <th>联系方式</th>
+                <th>姓名</th>
+                <th>时间</th>
+                <th>详情</th>
+            </tr>
+            {/eq}
+            </thead>
+            <tbody>
+            {eq name="data" value="123456"}
+            {volist name="list" id="data"}
+                <tr>
+                    <td>{$data.id}</td>
+                        <td class="title">
+                            <a href="{:url('index/Bugsubmit/getdetail',array('id' => $data.id))}">
+                                {$data.title}
+                            </a> 
+                        </td>
+                    <td ><button class="solve" onclick="ajaxPost()">{$data.isSolve ? '已解决' : '未解决'}</button></td>
+                    <td>{$data.connect}</td>
+                    <td>{$data.name}</td>
+                    <td>{$data.time|date="Y-m-d H:i:s",###}</td>
+                    <td><a href="{:url('index/Bugsubmit/getdetail',array('id' => $data.id))}"> 查看</a></td>
+                    <td><button onclick="deletes()">删除</button></td>
+                </tr>
+            {/volist}
+            {else/}
+            {volist name="list" id="data"}
+            <tr>
+                <td>{$data.id}</td>
+                <td class="title">
+                    <a href="{:url('index/Bugsubmit/getdetail',array('id' => $data.id))}">
+                        {$data.title}
+                    </a>
+                </td>
+                <td >{$data.isSolve ? '已解决' : '未解决'}</td>
+                <td>{$data.connect}</td>
+                <td>{$data.name}</td>
+                <td>{$data.time|date="Y-m-d H:i:s",###}</td>
+                <td><a href="{:url('index/Bugsubmit/getdetail',array('id' => $data.id))}"> 查看</a></td>
+            </tr>
+            {/volist}
+            {/eq}
+            </tbody>
+        </table>
+    </div>
+<script>
+    function ajaxPost(){
+        const es = document.getElementsByTagName('tr');
+        for (const key in es) {
+            es[key].onclick = function() {
+                var number = parseInt(key);
+                var t =$('table').find('tr').eq(number).find("td").eq(0).text();
+
+                $.ajax({
+                    type:"post",
+                    url:"{:url('index/Bugsubmit/updatebug')}",
+                    data:{id:t},
+                    dataType:"json",
+                    success:function(res){
+                        console.log(res);
+                        if(res === 1){
+                            $('table').find('tr').eq(number).find("td").eq(2).find('.solve').val("已解决").text("已解决");
+                        }else{
+                            $('table').find('tr').eq(number).find("td").eq(2).find('.solve').val("未解决").text("未解决");
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    function deletes(){
+        const es = document.getElementsByTagName('tr');
+        for (const key in es) {
+            es[key].onclick = function() {
+                var number = parseInt(key);
+                var t =$('table').find('tr').eq(number).find("td").eq(0).text();
+                $.ajax({
+                    type:"get",
+                    url:"{:url('index/Bugsubmit/deletebug')}",
+                    data:{id:t},
+                    dataType:"json",
+                    success:function(res){
+                        alert(res);
+                        $('table').find('tr').eq(number).remove();
+                    },
+                    error:function(){
+                        alert(res);
+                    }
+                });
+            }
+        }
+    }
+</script>
+</body>
+</html>

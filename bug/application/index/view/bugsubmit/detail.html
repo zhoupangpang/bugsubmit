@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>bug提交</title>
+    <link rel="stylesheet" href="__STATIC__/lib/css/bootstrap.min.css">
+    <script src="__STATIC__/lib/js/jquery.min.js"></script>
+    <script src="__STATIC__/lib/js/bootstrap.min.js"></script>
+    <style>
+        .container{
+            margin: 50px auto;
+        }
+        .panel{
+            width: 100%;
+        }
+        .btn{
+            float: right;
+            margin-bottom: 20px;
+        }
+        .table{
+            max-width: 1000px;
+        }
+        td.title{
+            width: 100px;
+        }
+        img {
+            max-width: 100% !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+               <h4>{$data.title}</h4>
+            </div>
+            <table class="table">
+                <tr><td class="title">id</td><td>{$data.id}</td></tr>
+                <tr><td class="title">内容</td><td>{$data.content}</td></tr>
+                <tr><td class="title">是否解决</td><td>{$data.isSolve ? '已解决':'未解决'}</td></tr>
+                <tr><td class="title">时间</td><td>{$data.time|date="Y-m-d H:i:s",###}</td></tr>
+                <tr><td class="title">姓名</td><td>{$data.name}</td></tr>
+                <tr><td class="title">联系方式</td><td>{$data.connect}</td></tr>
+            </table>
+         </div>
+         <a class="btn btn-success" href="{:url('index/Bugsubmit/index')}" role="button">返回</a>
+    </div>
+</body>
+</html>
+<script>
+
+</script>

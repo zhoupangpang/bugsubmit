@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>bug提交</title>
+    <link rel="stylesheet" href="__STATIC__/lib/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__STATIC__/lib/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="__STATIC__/lib/fonts/css/font-awesome.min.css">
+    <link rel="stylesheet" href="__STATIC__/lib/css/index.css">
+    <!-- <link rel="stylesheet" href="css/bootstrap-combined.no-icons.min.css"> -->
+    <link rel="stylesheet" href="__STATIC__/lib/css/prettify.css">
+
+    <script src="__STATIC__/lib/js/popper.min.js"></script>
+    <script src="__STATIC__/lib/js/jquery.min.js"></script>
+    <script src="__STATIC__/lib/js/bootstrap.min.js"></script>
+    <script src="__STATIC__/lib/js/bootstrap-wysiwyg.js"></script>
+    <script src="__STATIC__/lib/js/jquery.hotkeys.js"></script>
+    <script src="__STATIC__/lib/js/prettify.js"></script>
+  
+    <style>
+        .form-horizontal{
+            padding: 50px 0;
+        }
+        button,.back{
+            margin-top: 100px;
+            margin-left: 10px;
+            left: 100px;
+        }
+        .btn-success{
+            margin-left: 200px;
+            margin-top: -185px;
+        }
+        #title{
+            height: 30px;
+        }
+        #container{
+            margin: 20px auto;
+            height:300px;
+        }
+        .modal-dialog{
+            width: 400px;
+        }
+        .modal-body{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form class="form-horizontal" id="form" name="forms" >
+            <div class="form-group row">
+                <label for="title" class="col-sm-2 control-label">标题</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" name="title" id="title"
+                        placeholder="请输入标题">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="title" class="col-sm-2 control-label">联系人</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" name="name" id="username"
+                           placeholder="请输入联系人">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="title" class="col-sm-2 control-label">联系方式</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" name="connect" id="connect"
+                        placeholder="请输入联系方式">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="content" class="col-sm-2 control-label">内容</label>
+                <script class="col-sm-9" id="container" name="content" type="text/plain">
+                </script>
+            </div>
+            <div class="form-group row">
+                <button type="reset" class="col-md-offset-3 btn btn-default" id="cancel" onclick="clearLocalData()">取消</button>
+                <a class="col-md-offset-2 back btn btn-default" href="{:url('index/Bugsubmit/index')}" role="button">查看列表</a>
+            </div>
+        </form>
+        <button type="submit" class="up btn btn-success">提交</button>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-hidden="true">×
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        提交成功！
+                    </div>
+                    <div class="modal-footer">
+                        <a href="{:url('index/Bugsubmit/index')}">
+                        <button class="btn btn-primary">
+                            确定
+                        </button>
+                    </a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    </div>
+</body>
+</html>
+<!-- 配置文件 -->
+<script type="text/javascript" src="__STATIC__/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="__STATIC__/ueditor/ueditor.all.js"></script>
+<!-- 实例化编辑器 -->
+<script type="text/javascript">
+    var ue = UE.getEditor('container',{
+        scaleEnabled:true
+    });
+</script>
+<script>
+   function clearLocalData () {
+       UE.getEditor('container').setContent('') ;
+   }
+   $(".btn-success").click(function () {
+       var str = ue.getContent();//获取编辑器内容
+       if(forms.title.value == ""){
+           alert('标题不能为空');
+           forms.title.select();
+           return false;
+       }
+       if(forms.name.value == ""){
+           alert('联系人不能为空');
+           forms.name.select();
+           return false;
+       }
+       if(forms.connect.value == ""){
+           alert('联系方式不能为空');
+           forms.connect.select();
+           return false;
+       }
+       if(str.length === 0){
+           alert('内容不能为空');
+           forms.content.select();
+           return false;
+       }
+       $.ajax({
+           type: "post",
+           url: "{:url('index/Bugsubmit/setbug')}",
+           data: {
+               title:$("#title").val(),
+               name:$("#username").val(),
+               connect:$("#connect").val(),
+               content: str
+           },
+           success: function (msg) {
+               $('#myModal').modal('show');
+           },
+           error:function(msg) {
+               alert(msg);
+           }
+       })
+   })
+</script>
